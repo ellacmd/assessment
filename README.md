@@ -58,7 +58,7 @@ A responsive log viewer interface with filtering, pagination and sorting.
 1. Clone repository:
 
     ```bash
-    git clone []
+    git clone [https://github.com/ellacmd/assessment]
     cd betterstudio-assessment
 
     ```
@@ -79,7 +79,8 @@ A responsive log viewer interface with filtering, pagination and sorting.
     You'll need to encode your API key in Base64 format. You can do this by:
 
     a. Opening your browser's developer console (F12)
-    b. Running the following command:
+
+    b. Run the following command:
 
     ```javascript
     btoa('your-api-key-here');
