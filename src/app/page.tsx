@@ -14,7 +14,7 @@ const defaultFilters: LogFilters = {
 export default function Home() {
     const [logs, setLogs] = useState<Log[]>([]);
     const [filters, setFilters] = useState<LogFilters>(defaultFilters);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(
@@ -60,12 +60,12 @@ export default function Home() {
                 return false;
 
             if (filters.search && filters.search.trim()) {
-                const searchLower = filters.search.toLowerCase();
+                const searchLowerCase = filters.search.toLowerCase();
                 const matchesSearch =
-                    log.message.toLowerCase().includes(searchLower) ||
-                    log.trace.toLowerCase().includes(searchLower) ||
-                    log.authorId.toLowerCase().includes(searchLower) ||
-                    log.level.toLowerCase().includes(searchLower);
+                    log.message.toLowerCase().includes(searchLowerCase) ||
+                    log.trace.toLowerCase().includes(searchLowerCase) ||
+                    log.authorId.toLowerCase().includes(searchLowerCase) ||
+                    log.level.toLowerCase().includes(searchLowerCase);
 
                 if (!matchesSearch) return false;
             }

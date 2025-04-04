@@ -2,9 +2,11 @@ import { Log, LogMessage } from '@/types/log';
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY_BASE64 || '';
 const API_URL = '/api/logs';
+const RAW_KEY = process.env.NEXT_PUBLIC_RAW_KEY || '';
 
 export async function fetchLogs(): Promise<Log[]> {
     const decodedApiKey = atob(API_KEY);
+
     try {
         const response = await fetch(API_URL, {
             headers: {

@@ -106,4 +106,4 @@ A responsive log viewer interface with filtering, pagination and sorting.
 
 ### Demo Video
 
-[Loom Walkthrough]()
+[Loom Walkthrough](https://www.loom.com/share/229beee1dd66428fb27874aff5229984)
