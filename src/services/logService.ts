@@ -1,8 +1,7 @@
-import { Log, LogMessage } from '@/types/log';
+import { Log } from '@/types/log';
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY_BASE64 || '';
 const API_URL = '/api/logs';
-
 
 export async function fetchLogs(): Promise<Log[]> {
     const decodedApiKey = atob(API_KEY);
@@ -33,7 +32,7 @@ function parseLogLine(line: string): Log {
     return {
         timestamp,
         level,
-        message: message.toLowerCase() as LogMessage,
+        message: message.toLowerCase(),
         trace,
         authorId,
     };
