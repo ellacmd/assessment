@@ -14,7 +14,7 @@ const defaultFilters: LogFilters = {
 export default function Home() {
     const [logs, setLogs] = useState<Log[]>([]);
     const [filters, setFilters] = useState<LogFilters>(defaultFilters);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(
@@ -31,7 +31,6 @@ export default function Home() {
     }, [filters, sortDirection]);
 
     async function loadLogs() {
-        setLoading(true);
         setError(null);
         try {
             const fetchedLogs = await fetchLogs();
