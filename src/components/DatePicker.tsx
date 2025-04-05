@@ -1,65 +1,68 @@
 'use client';
-import { useState } from 'react';
-import dynamic from 'next/dynamic';
-import moment from 'moment';
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
+import DatePicker from 'react-date-picker';
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
 import './DatePicker.css';
-
-const SingleDatePicker = dynamic(
-    () => import('react-dates').then((mod) => mod.SingleDatePicker),
-    { ssr: false }
-);
 
 interface DatePickerProps {
     date: string;
     onDateChange: (date: string) => void;
-    placeholder?: string;
     id: string;
     minDate?: string;
     maxDate?: string;
+    isStartDate?: boolean;
 }
 
-export function DatePicker({
+export function CustomDatePicker({
     date,
     onDateChange,
-    placeholder = 'Select date',
-    id,
     minDate,
     maxDate,
+    isStartDate = false,
 }: DatePickerProps) {
-    const [focused, setFocused] = useState(false);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
+    const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     return (
-        <div className='date-picker-container pl-4 py-2 border rounded'>
-            <SingleDatePicker
-                date={date ? moment(date) : null}
-                onDateChange={(newDate) =>
-                    onDateChange(newDate ? newDate.format('YYYY-MM-DD') : '')
-                }
-                focused={focused}
-                onFocusChange={({ focused: isFocused }) =>
-                    setFocused(isFocused)
-                }
-                id={id}
-                placeholder={placeholder}
-                numberOfMonths={1}
-                isOutsideRange={(currentDate) => {
-                    if (maxDate && currentDate.isAfter(moment(maxDate)))
-                        return true;
-                    if (minDate && currentDate.isBefore(moment(minDate)))
-                        return true;
-                    return false;
+        <div className='date-picker-container px-4 py-2 border rounded'>
+            <DatePicker
+                value={date ? new Date(date) : null}
+                onChange={(value: Date | null | [Date | null, Date | null]) => {
+                    if (value instanceof Date) {
+                        const localDate = new Date(
+                            value.getFullYear(),
+                            value.getMonth(),
+                            value.getDate(),
+                            12
+                        );
+                        onDateChange(formatDate(localDate));
+                    } else {
+                        onDateChange('');
+                    }
                 }}
-                showClearDate={true}
-                small={true}
-                displayFormat='DD/MM/YYYY'
-                readOnly
-                customInputIcon={null}
-                noBorder
-                block
+                format='dd/MM/y'
+                clearIcon={null}
+                calendarIcon={null}
+                minDate={minDate ? new Date(minDate) : undefined}
+                maxDate={
+                    isStartDate
+                        ? today
+                        : maxDate
+                        ? new Date(maxDate)
+                        : undefined
+                }
+                dayPlaceholder='dd'
+                monthPlaceholder='mm'
+                yearPlaceholder='yyyy'
+                className='custom-datepicker'
             />
-       
         </div>
     );
 }

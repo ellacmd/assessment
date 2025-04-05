@@ -2,38 +2,49 @@
     display: inline-block;
 }
 
-.date-picker-container .SingleDatePickerInput {
-    background: transparent;
-    border: none;
+.custom-datepicker {
+    width: 100%;
 }
 
-.date-picker-container .DateInput {
-    background: transparent;
-    width: fit-content;
+.custom-datepicker .react-date-picker__wrapper {
+    border: none;
+    padding: 0;
 }
 
-.date-picker-container .DateInput_input {
-    border: none;
-    border-radius: 0;
+.custom-datepicker .react-date-picker__inputGroup {
     font-size: 0.875rem;
     line-height: 1.25rem;
-    padding: 0;
-    background: transparent;
     color: rgb(17 24 39);
     font-weight: 400;
+    padding: 0;
 }
 
-.date-picker-container .DateInput_input::placeholder {
+.custom-datepicker .react-date-picker__inputGroup__input {
+    color: rgb(17 24 39);
+    font-weight: 400;
+    outline: none;
+}
+
+.custom-datepicker .react-date-picker__inputGroup__input::placeholder {
     color: rgb(107 114 128);
     font-weight: 400;
 }
 
-.date-picker-container .DateInput_input:focus {
-    outline: none;
-    border: none;
-    box-shadow: none;
+.react-calendar {
+    border: 1px solid rgb(209 213 219) !important;
+    border-radius: 0.375rem;
+    font-family: inherit;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
-.SingleDatePicker_picker {
-    z-index: 10;
+.react-calendar__tile--active {
+    background: rgb(37 99 235) !important;
+}
+
+.react-calendar__tile--now {
+    background: rgb(219 234 254) !important;
+}
+
+.react-calendar__tile:enabled:hover {
+    background: rgb(241 245 249) !important;
 }

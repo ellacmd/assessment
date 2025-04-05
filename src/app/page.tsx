@@ -13,9 +13,7 @@ import {
     startOfDay,
     endOfDay,
 } from 'date-fns';
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
-import { DatePicker } from '@/components/DatePicker';
+import { CustomDatePicker as DatePicker } from '@/components/DatePicker';
 
 const defaultFilters = {
     search: '',
@@ -259,9 +257,9 @@ export default function Home() {
                                     startDate: date,
                                 })
                             }
-                            placeholder='Start Date'
                             id='start_date_picker'
                             maxDate={filters.endDate || undefined}
+                            isStartDate={true}
                         />
                         <DatePicker
                             date={filters.endDate}
@@ -270,7 +268,6 @@ export default function Home() {
                                     endDate: date,
                                 })
                             }
-                            placeholder='End Date'
                             id='end_date_picker'
                             minDate={filters.startDate || undefined}
                         />
