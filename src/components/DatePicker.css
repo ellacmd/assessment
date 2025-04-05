@@ -1,0 +1,39 @@
+.date-picker-container {
+    display: inline-block;
+}
+
+.date-picker-container .SingleDatePickerInput {
+    background: transparent;
+    border: none;
+}
+
+.date-picker-container .DateInput {
+    background: transparent;
+    width: fit-content;
+}
+
+.date-picker-container .DateInput_input {
+    border: none;
+    border-radius: 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 0;
+    background: transparent;
+    color: rgb(17 24 39);
+    font-weight: 400;
+}
+
+.date-picker-container .DateInput_input::placeholder {
+    color: rgb(107 114 128);
+    font-weight: 400;
+}
+
+.date-picker-container .DateInput_input:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+.SingleDatePicker_picker {
+    z-index: 10;
+}

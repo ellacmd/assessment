@@ -3,12 +3,40 @@ import { useEffect, useMemo, useState } from 'react';
 import { Log } from '@/types/log';
 import { fetchLogs } from '@/services/logService';
 import { PaginationControls } from '@/components/PaginationControls';
+import {
+    parseISO,
+    format,
+    isValid,
+    parse,
+    isBefore,
+    isAfter,
+    startOfDay,
+    endOfDay,
+} from 'date-fns';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+import { DatePicker } from '@/components/DatePicker';
 
 const defaultFilters = {
     search: '',
     message: '',
     startDate: '',
     endDate: '',
+};
+
+const parseLogTimestamp = (timestamp: string) => {
+    try {
+        const [dateTimePart] = timestamp.split('|=|');
+        const [datePart, timePart] = dateTimePart.split(' ');
+        return parse(
+            `${datePart} ${timePart}`,
+            'yyyy-MM-dd HH:mm:ss',
+            new Date()
+        );
+    } catch (error) {
+        console.error('Error parsing timestamp:', timestamp, error);
+        return null;
+    }
 };
 
 export default function Home() {
@@ -69,17 +97,25 @@ export default function Home() {
                 if (!matchesSearch) return false;
             }
 
-            const logDate = new Date(log.timestamp).getTime();
-            if (
-                filters.startDate &&
-                logDate < new Date(filters.startDate).getTime()
-            )
-                return false;
-            if (
-                filters.endDate &&
-                logDate > new Date(filters.endDate).getTime()
-            )
-                return false;
+            const logDate = parseLogTimestamp(log.timestamp);
+            if (!logDate) return false;
+
+            if (filters.startDate) {
+                const startDate = parseISO(filters.startDate);
+                if (
+                    isValid(startDate) &&
+                    isBefore(logDate, startOfDay(startDate))
+                ) {
+                    return false;
+                }
+            }
+
+            if (filters.endDate) {
+                const endDate = parseISO(filters.endDate);
+                if (isValid(endDate) && isAfter(logDate, endOfDay(endDate))) {
+                    return false;
+                }
+            }
 
             return true;
         });
@@ -93,9 +129,12 @@ export default function Home() {
         }
 
         return [...filteredLogs].sort((a, b) => {
-            const dateA = new Date(a.timestamp).getTime();
-            const dateB = new Date(b.timestamp).getTime();
-            return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+            const dateA = parseLogTimestamp(a.timestamp);
+            const dateB = parseLogTimestamp(b.timestamp);
+            if (!dateA || !dateB) return 0;
+            return sortDirection === 'asc'
+                ? dateA.getTime() - dateB.getTime()
+                : dateB.getTime() - dateA.getTime();
         });
     }, [filteredLogs, sortDirection]);
 
@@ -136,7 +175,6 @@ export default function Home() {
                 ...updates,
             };
 
-          
             if ('startDate' in updates || 'endDate' in updates) {
                 const startDate = newFilters.startDate
                     ? new Date(newFilters.startDate).getTime()
@@ -145,7 +183,6 @@ export default function Home() {
                     ? new Date(newFilters.endDate).getTime()
                     : Infinity;
 
-          
                 if (endDate < startDate) {
                     newFilters.endDate = '';
                 }
@@ -214,32 +251,30 @@ export default function Home() {
                         }
                     />
 
-                    <input
-                        type='datetime-local'
-                        className='px-4 py-2 border rounded'
-                        value={filters.startDate}
-                        max={
-                            filters.endDate ||
-                            new Date().toISOString().slice(0, 16)
-                        }
-                        onChange={(e) =>
-                            handleFilterChange({
-                                startDate: e.target.value,
-                            })
-                        }
-                    />
-                    <input
-                        type='datetime-local'
-                        className='px-4 py-2 border rounded'
-                        value={filters.endDate}
-                        min={filters.startDate || undefined}
-                        max={new Date().toISOString().slice(0, 16)}
-                        onChange={(e) =>
-                            handleFilterChange({
-                                endDate: e.target.value,
-                            })
-                        }
-                    />
+                    <div className='flex gap-4 flex-wrap'>
+                        <DatePicker
+                            date={filters.startDate}
+                            onDateChange={(date: string) =>
+                                handleFilterChange({
+                                    startDate: date,
+                                })
+                            }
+                            placeholder='Start Date'
+                            id='start_date_picker'
+                            maxDate={filters.endDate || undefined}
+                        />
+                        <DatePicker
+                            date={filters.endDate}
+                            onDateChange={(date: string) =>
+                                handleFilterChange({
+                                    endDate: date,
+                                })
+                            }
+                            placeholder='End Date'
+                            id='end_date_picker'
+                            minDate={filters.startDate || undefined}
+                        />
+                    </div>
                 </div>
 
                 <button
@@ -291,9 +326,18 @@ export default function Home() {
                                             key={index}
                                             className='hover:bg-gray-50'>
                                             <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                                                {new Date(
-                                                    log.timestamp
-                                                ).toLocaleString()}
+                                                {(() => {
+                                                    const date =
+                                                        parseLogTimestamp(
+                                                            log.timestamp
+                                                        );
+                                                    return date
+                                                        ? format(
+                                                              date,
+                                                              'dd/MM/yyyy HH:mm:ss'
+                                                          )
+                                                        : 'Invalid date';
+                                                })()}
                                             </td>
                                             <td className='px-6 py-4 whitespace-nowrap capitalize'>
                                                 <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full '>
